@@ -1,2 +1,86 @@
 This code works well for 1D arrays. But trying it on 2D makes the compilation fail.
 
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:27:84: error: no matching function for call to object of type '(anonymous namespace)::pythonic::numpy::fft::functor::rfft'
+      typedef typename pythonic::returnable<typename pythonic::assignable<decltype(std::declval<typename std::remove_cv<typename std::remove_reference<decltype(pythonic::numpy::fft::functor::rfft{})>::type>::type>()(std::declval<__type0>()))>::type>::type result_type;
+                                                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:58:35: note: in instantiation of template class '__pythran_Foo::testFunc::type<(anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> > >' requested here
+typename __pythran_Foo::testFunc::type<pythonic::types::numpy_texpr<pythonic::types::ndarray<double,2>>>::result_type testFunc1(pythonic::types::numpy_texpr<pythonic::types::ndarray<double,2>>&& signal) 
+                                  ^
+/Library/Python/2.7/site-packages/pythran/pythonic/numpy/fft/rfft.hpp:94:4: note: candidate template ignored: substitution failure [with Types = <(anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> >>]: no matching function for call to 'rfft'
+          DEFINE_FUNCTOR(pythonic::numpy::fft, rfft);
+          ^              ~~~~~~~~
+/Library/Python/2.7/site-packages/pythran/pythonic/utils/functor.hpp:20:31: note: expanded from macro 'DEFINE_FUNCTOR'
+#define DEFINE_FUNCTOR(ns, f) DEFINE_FUNCTOR_2(f, ns::f)
+                              ^                   ~~
+/Library/Python/2.7/site-packages/pythran/pythonic/utils/functor.hpp:12:13: note: expanded from macro 'DEFINE_FUNCTOR_2'
+    auto s::operator()(Types && ... types) const                               \
+            ^
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:27:84: error: no matching function for call to object of type '(anonymous namespace)::pythonic::numpy::fft::functor::rfft'
+      typedef typename pythonic::returnable<typename pythonic::assignable<decltype(std::declval<typename std::remove_cv<typename std::remove_reference<decltype(pythonic::numpy::fft::functor::rfft{})>::type>::type>()(std::declval<__type0>()))>::type>::type result_type;
+                                                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:35:22: note: in instantiation of template class '__pythran_Foo::testFunc::type<(anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> > &>' requested here
+  typename testFunc::type<argument_type0>::result_type testFunc::operator()(argument_type0&& signal) const
+                     ^
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:63:69: note: while substituting deduced template arguments into function template 'operator()' [with argument_type0 = (anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> > &]
+                                auto res = __pythran_Foo::testFunc()(signal);
+                                                                    ^
+/Library/Python/2.7/site-packages/pythran/pythonic/numpy/fft/rfft.hpp:94:4: note: candidate template ignored: substitution failure [with Types = <(anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> >>]: no matching function for call to 'rfft'
+          DEFINE_FUNCTOR(pythonic::numpy::fft, rfft);
+          ^              ~~~~~~~~
+/Library/Python/2.7/site-packages/pythran/pythonic/utils/functor.hpp:20:31: note: expanded from macro 'DEFINE_FUNCTOR'
+#define DEFINE_FUNCTOR(ns, f) DEFINE_FUNCTOR_2(f, ns::f)
+                              ^                   ~~
+/Library/Python/2.7/site-packages/pythran/pythonic/utils/functor.hpp:12:13: note: expanded from macro 'DEFINE_FUNCTOR_2'
+    auto s::operator()(Types && ... types) const                               \
+            ^
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:63:44: error: no matching function for call to object of type '__pythran_Foo::testFunc'
+                                auto res = __pythran_Foo::testFunc()(signal);
+                                           ^~~~~~~~~~~~~~~~~~~~~~~~~
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:35:66: note: candidate template ignored: substitution failure [with argument_type0 = (anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> > &]
+  typename testFunc::type<argument_type0>::result_type testFunc::operator()(argument_type0&& signal) const
+                                                                 ^
+3 errors generated.
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:27:84: error: no matching function for call to object of type '(anonymous namespace)::pythonic::numpy::fft::functor::rfft'
+      typedef typename pythonic::returnable<typename pythonic::assignable<decltype(std::declval<typename std::remove_cv<typename std::remove_reference<decltype(pythonic::numpy::fft::functor::rfft{})>::type>::type>()(std::declval<__type0>()))>::type>::type result_type;
+                                                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:58:35: note: in instantiation of template class '__pythran_Foo::testFunc::type<(anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> > >' requested here
+typename __pythran_Foo::testFunc::type<pythonic::types::numpy_texpr<pythonic::types::ndarray<double,2>>>::result_type testFunc1(pythonic::types::numpy_texpr<pythonic::types::ndarray<double,2>>&& signal) 
+                                  ^
+/Library/Python/2.7/site-packages/pythran/pythonic/numpy/fft/rfft.hpp:94:4: note: candidate template ignored: substitution failure [with Types = <(anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> >>]: no matching function for call to 'rfft'
+          DEFINE_FUNCTOR(pythonic::numpy::fft, rfft);
+          ^              ~~~~~~~~
+/Library/Python/2.7/site-packages/pythran/pythonic/utils/functor.hpp:20:31: note: expanded from macro 'DEFINE_FUNCTOR'
+#define DEFINE_FUNCTOR(ns, f) DEFINE_FUNCTOR_2(f, ns::f)
+                              ^                   ~~
+/Library/Python/2.7/site-packages/pythran/pythonic/utils/functor.hpp:12:13: note: expanded from macro 'DEFINE_FUNCTOR_2'
+    auto s::operator()(Types && ... types) const                               \
+            ^
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:27:84: error: no matching function for call to object of type '(anonymous namespace)::pythonic::numpy::fft::functor::rfft'
+      typedef typename pythonic::returnable<typename pythonic::assignable<decltype(std::declval<typename std::remove_cv<typename std::remove_reference<decltype(pythonic::numpy::fft::functor::rfft{})>::type>::type>()(std::declval<__type0>()))>::type>::type result_type;
+                                                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:35:22: note: in instantiation of template class '__pythran_Foo::testFunc::type<(anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> > &>' requested here
+  typename testFunc::type<argument_type0>::result_type testFunc::operator()(argument_type0&& signal) const
+                     ^
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:63:69: note: while substituting deduced template arguments into function template 'operator()' [with argument_type0 = (anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> > &]
+                                auto res = __pythran_Foo::testFunc()(signal);
+                                                                    ^
+/Library/Python/2.7/site-packages/pythran/pythonic/numpy/fft/rfft.hpp:94:4: note: candidate template ignored: substitution failure [with Types = <(anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> >>]: no matching function for call to 'rfft'
+          DEFINE_FUNCTOR(pythonic::numpy::fft, rfft);
+          ^              ~~~~~~~~
+/Library/Python/2.7/site-packages/pythran/pythonic/utils/functor.hpp:20:31: note: expanded from macro 'DEFINE_FUNCTOR'
+#define DEFINE_FUNCTOR(ns, f) DEFINE_FUNCTOR_2(f, ns::f)
+                              ^                   ~~
+/Library/Python/2.7/site-packages/pythran/pythonic/utils/functor.hpp:12:13: note: expanded from macro 'DEFINE_FUNCTOR_2'
+    auto s::operator()(Types && ... types) const                               \
+            ^
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:63:44: error: no matching function for call to object of type '__pythran_Foo::testFunc'
+                                auto res = __pythran_Foo::testFunc()(signal);
+                                           ^~~~~~~~~~~~~~~~~~~~~~~~~
+/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp:35:66: note: candidate template ignored: substitution failure [with argument_type0 = (anonymous namespace)::pythonic::types::numpy_texpr<(anonymous namespace)::pythonic::types::ndarray<double, 2> > &]
+  typename testFunc::type<argument_type0>::result_type testFunc::operator()(argument_type0&& signal) const
+                                                                 ^
+3 errors generated.
+WARNING  Compilation error, trying hard to find its origin...
+WARNING  Nop, I'm going to flood you with C++ errors!
+CRITICAL Cover me Jack. Jack? Jaaaaack!!!!
+E: error: Command "c++ -fno-strict-aliasing -fno-common -dynamic -arch x86_64 -arch i386 -g -Os -pipe -fno-common -fno-strict-aliasing -fwrapv -DENABLE_DTRACE -DMACOSX -DNDEBUG -Wall -Wshorten-64-to-32 -DNDEBUG -g -fwrapv -Os -Wall -Wstrict-prototypes -DENABLE_DTRACE -arch x86_64 -arch i386 -pipe -DUSE_GMP -DBOOST_SIMD_CONFIG_SUPPORT_POSIX_MEMALIGN -DENABLE_PYTHON_MODULE -D__PYTHRAN__=2 -DPYTHRAN_BLAS_BLAS -I/Library/Python/2.7/site-packages/pythran -I/Library/Python/2.7/site-packages/numpy/core/include -I/usr/local/Cellar/openblas/0.2.20/include -I/Library/Python/2.7/site-packages/numpy/core/include -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -c /var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.cpp -o /var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmpi4g3Qg/var/folders/j6/7t8sg1vj4q97zhh9z5cdmxbm4rz935/T/tmp3VVwrW.o -std=c++11 -fno-math-errno -w" failed with exit status 1
