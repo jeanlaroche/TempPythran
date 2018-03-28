@@ -1,21 +1,18 @@
-#ifndef PYTHONIC_NUMPY_VAR_HPP
-#define PYTHONIC_NUMPY_VAR_HPP
+#ifndef PYTHONIC_NUMPY_FFT_RFFT_HPP
+#define PYTHONIC_NUMPY_FFT_RFFT_HPP
 
 #include "pythonic/include/numpy/fft/rfft.hpp"
-//#include "pythonic/include/numpy/fft/fftpack.h"
-
 #include "pythonic/utils/functor.hpp"
 #include "pythonic/include/utils/array_helper.hpp"
 #include <array>
+#include <map>
 #include "pythonic/types/ndarray.hpp"
 #include "pythonic/__builtin__/None.hpp"
 #include "pythonic/__builtin__/ValueError.hpp"
-#include "pythonic/numpy/reshape.hpp"
-#include "pythonic/numpy/empty_like.hpp"
+#include "pythonic/numpy/swapaxes.hpp"
 
-#include <algorithm>
+
 #include <stdio.h>
-
 #include "pythonic/numpy/fft/fftpack.c"
 
 
@@ -23,76 +20,101 @@ PYTHONIC_NS_BEGIN
 
 namespace numpy
 {
-// 	template <class T>
-// 	types::numpy_texpr<types::ndarray<T, 2>> rfft(types::ndarray<T, 2> const &arr)
-// 	{
-// 		return {arr};
-// 	}
-	namespace fft
-	{
-      template<class T, size_t N> 
-	  types::ndarray<std::complex<typename std::common_type<T, double>::type>, N> rfft(types::ndarray<T, N> const &a, long M)
-	  {
-	  	  auto shape = a.shape();
-	  	  int i;
-	  	  printf("Shape %d N = %d -- Flat size: %d\n",shape,N,a.flat_size());
-	  	  
-	  	  // Create output array.
-	      types::ndarray<std::complex<typename std::common_type<T, double>::type>, N> out_array(shape,__builtin__::None);
-	      
-	      // Create the twiddle factors
-	      // This is from fftpack_litemodule.c
-	      types::array<long, 1> twiddle_shape = {(long)(2*M+15)};
-	      types::ndarray<T, 1> wsave(twiddle_shape,__builtin__::None);
-	      // Call initialization of the factors
-		  npy_rffti(M, (double *)wsave.buffer);
-		  
-	      // Call fft (fftpack.py) r = work_function(a, wsave)
-// 			nrepeats = PyArray_SIZE(data)/npts;
-// 			rptr = (double *)PyArray_DATA(ret);
-// 			dptr = (double *)PyArray_DATA(data);
-// 
-// 			Py_BEGIN_ALLOW_THREADS;
-// 			NPY_SIGINT_ON;
-// 			for (i = 0; i < nrepeats; i++) {
-// 				memcpy((char *)(rptr+1), dptr, npts*sizeof(double));
-// 				npy_rfftf(npts, rptr+1, wsave);
-// 				rptr[0] = rptr[1];
-// 				rptr[1] = 0.0;
-// 				rptr += rstep;
-// 				dptr += npts;
-// 			}
-
-			double* rptr = (double*)out_array.buffer;
-			double* dptr = (double*)a.buffer;
-			
-			long nrepeats = a.flat_size()/shape[0];
-			long out_size = M/2+1;
-			for (i = 0; i < nrepeats; i++) {
-				memcpy((char *)(rptr+1), dptr, M*sizeof(double));
-				npy_rfftf(M, rptr+1, (double*)wsave.buffer);
-				rptr[0] = rptr[1];
-				rptr[1] = 0.0;
-				rptr[M+1] = 0.0;
-				rptr += out_size;
-				dptr += M;
-			}
-			out_array._shape[0] = out_size;
-	      	
-	      return out_array;
-	  }
-
-	  template <class T, size_t N>
-	  types::ndarray<std::complex<typename std::common_type<T, double>::type>, N> rfft(types::ndarray<T, N> const &a)
-	  {
-	  	auto shape = a.shape();
-	  	long M = shape[0];
-		return rfft(a,M);
-	  }
-
-
-	  DEFINE_FUNCTOR(pythonic::numpy::fft, rfft);
-  }
+    namespace fft
+    {
+        // Aux function
+        template<class T, size_t N>
+        types::ndarray<std::complex<typename std::common_type<T, double>::type>, N> _rfft(types::ndarray<T, N> const &in_array, long NFFT)
+        {
+            int i;
+            auto shape = in_array.shape();
+            double* dptr = (double*)in_array.buffer;
+            long npts = shape.back();
+            // 	  	  printf("Shape %d %d N = %d -- Flat size: %d NFFT = %d npts = %d\n",
+            // 	  	  	shape[0],shape[1],N,in_array.flat_size(),NFFT,npts);
+            
+            // Create output array.
+            long out_size = NFFT/2+1;
+            auto out_shape = shape;
+            out_shape.back() = out_size;
+            types::ndarray<std::complex<typename std::common_type<T, double>::type>, N> out_array(out_shape,__builtin__::None);
+            
+//            for (i = 0; i < NFFT; i++)
+//                printf("in: %.4f\n",dptr[i]);
+            
+            // Create the twiddle factors. These must be kept from call to call as it's very wasteful to recompute them.
+            // This is from fftpack_litemodule.c
+            static std::map<int, types::ndarray<T, 1>> all_twiddles;
+            if (all_twiddles.find(NFFT) == all_twiddles.end()) {
+//                printf("CREATING TWIDDLE FOR %d\n",NFFT);
+                types::array<long, 1> twiddle_shape = {(long)(2*NFFT+15)};
+                // Insert a new twiddle array into our map
+                all_twiddles.insert(std::make_pair(NFFT,types::ndarray<T, 1>(twiddle_shape,__builtin__::None)));
+                // Then initialize it.
+                npy_rffti(NFFT, (double *)all_twiddles[NFFT].buffer);
+            }
+            else {
+                //printf("RECALLING TWIDDLE FOR %d\n",NFFT);
+            }
+            
+            // Call fft (fftpack.py) r = work_function(in_array, wsave)
+            // This is translated from https://raw.githubusercontent.com/numpy/numpy/master/numpy/fft/fftpack_litemodule.c
+            
+            double* rptr            = (double*)out_array.buffer;
+            double* twiddle_buffer  = (double*) all_twiddles[NFFT].buffer;
+            long nrepeats           = in_array.flat_size()/npts;
+            for (i = 0; i < nrepeats; i++) {
+                if(NFFT <= npts)
+                    memcpy((char *)(rptr+1), dptr, NFFT*sizeof(double));
+                else {
+                    // Zero padding if the FFT size is > the number points
+                    memcpy((char *)(rptr+1), dptr, npts*sizeof(double));
+                    memset((char *)(rptr+1+npts),0,(NFFT-npts)*sizeof(double));
+                }
+                npy_rfftf(NFFT, rptr+1, twiddle_buffer);
+                rptr[0] = rptr[1];
+                rptr[1] = 0.0;
+                rptr[NFFT+1] = 0.0;
+                rptr += 2*out_size;
+                dptr += npts;
+            }
+            
+//            for (i = 0; i < out_size; i++) {
+//                printf("out_array: %.4f %.4f\n",out_array[i].real(),out_array[i].imag());
+//            }
+            
+            return out_array;
+        }
+        
+        template<class T, size_t N>
+        types::ndarray<std::complex<typename std::common_type<T, double>::type>, N> rfft(types::ndarray<T, N> const &in_array, long NFFT, long axis)
+        {
+            if(axis != -1 && axis != N-1) {
+                // Swap axis if the FFT must be computed on an axis that's not the last one.
+                auto swapped_array = swapaxes(in_array, axis, N-1);
+                return swapaxes(_rfft(swapped_array,NFFT),axis,N-1);
+            }
+            else{
+                return _rfft(in_array,NFFT);
+            }
+        }
+        
+        template <class T, size_t N>
+        types::ndarray<std::complex<typename std::common_type<T, double>::type>, N> rfft(types::ndarray<T, N> const &in_array)
+        {
+            long NFFT = in_array.shape().back();
+            return rfft(in_array,NFFT,-1);
+        }
+        
+        template <class T, size_t N>
+        types::ndarray<std::complex<typename std::common_type<T, double>::type>, N> rfft(types::ndarray<T, N> const &in_array, long NFFT)
+        {
+            return rfft(in_array,NFFT,-1);
+        }
+        
+        NUMPY_EXPR_TO_NDARRAY0_IMPL(rfft);
+        DEFINE_FUNCTOR(pythonic::numpy::fft, rfft);
+    }
 }
 PYTHONIC_NS_END
 
