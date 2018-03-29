@@ -1,3 +1,6 @@
+#ifndef PYTHONIC_NUMPY_FFT_FFTPACK_C
+#define PYTHONIC_NUMPY_FFT_FFTPACK_C
+
 /*
  * fftpack.c : A set of FFT routines in C.
  * Algorithmically based on Fortran-77 FFTPACK by Paul N. Swarztrauber (Version 4, 1985).
@@ -1533,4 +1536,6 @@ NPY_VISIBILITY_HIDDEN void npy_rffti(int n, Treal wsave[])
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
